@@ -90,7 +90,7 @@ module Sensu
       # Run the extension with a few safeties. This method wraps
       # run() with a begin;rescue, and duplicates data before passing
       # it to ensure the extension doesn't mutate the original. Do
-      # not override this method!
+      # not override this method in your extensions!
       #
       # @param data [Object, nil) to dup() and pass to run().
       # @param callback [Proc] to pass to run().
@@ -115,8 +115,12 @@ module Sensu
 
     # Create an extension class for each category from Base.
     CATEGORIES.each do |category|
+      next if [:handlers].include? category # Handler subclass is explicitly defined in sensu/extension/handler.
       extension_type = category.to_s.chop
       Sensu::Extension.const_set(extension_type.capitalize, Class.new(Base))
     end
   end
 end
+
+require "sensu/extension/handler"
+
