@@ -88,7 +88,7 @@ module Sensu
         interval    = @event[:check][:interval]    || defaults[:interval]
         refresh     = @event[:check][:refresh]     || defaults[:refresh]
         if @event[:occurrences] < occurrences
-          return false, "not enough occurrences (need #{defaults[:occurrences]})"
+          return false, "not enough occurrences (need #{occurrences})"
         end
         if @event[:occurrences] > occurrences && @event[:action] == 'create'
           number = refresh.fdiv(interval).to_i
@@ -167,11 +167,7 @@ module Sensu
           callback.call(message, 0)
           return
         end
-        begin
-          data ? run(@event, &callback) : run(&callback)
-        rescue => error
-          callback.call(error.to_s, 2)
-        end
+        super
       end
 
     end
